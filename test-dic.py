@@ -25,6 +25,8 @@ with open(args.infile,"r") as infile:
 		if line.find("RUN:",0) > -1:
 			run['Num']=line[4:9]
 			run['DateTime']=line[13:36]
+			outfilename = args.outdir + run['Num'].strip() + 'L.sql'
+
 
 		# Round, Class, and Type	
 		if line.find("RD#",0) > -1:
@@ -83,17 +85,30 @@ with open(args.infile,"r") as infile:
 # Section to print contents of dictionary
 # really only here for testing
 
-		for key in run:
-			if key == 'RightNum':
-				print key, '=', run[key].strip(':')
-			elif key == 'Round':
-				print key, '=', run[key].strip('RD# ')			
-			else:
-				print key, '=', run[key].strip()
+#		with open(outfilename,'a') as outfile: 
+#			for key in run:
+#				if key == 'RightNum':
+#					outfile.write(key + '=' + run[key].strip(':') + '\n')
+#				elif key == 'Round':
+#					outfile.write(key + '=' + run[key].strip('RD# ') + '\n')			
+#				else:
+#					outfile.write(key + '=' + run[key].strip() + '\n')
 
+
+			with open(outfilename,'a') as outfile:
+
+				outfile.write("insert into RunDetail (RaceNum, RaceDateTime, Class, RunType, ")
+				outfile.write("Lane, CarNo, DriverName, DialIn, Reaction, ET) Values ")
+				outfile.write("('%s', '%s', '%s', '%s', " % (run['Num'].strip(),run['DateTime'].strip(),run['Class'].strip(),run['Type'].strip()) )
+				outfile.write("'%s', '%s', '%s', '%s', " % ('L', run['LeftNum'].strip(), run['LeftName'].strip(), run['LeftDial'].strip()) )
+				outfile.write("'%s', '%s')\n" % (run['LeftReaction'].strip(), run['LeftET'].strip()) )
+
+				outfile.close()
+#		print run['RaceCls']
                # Empty this run from dictionary
 		run.clear()
-		
+
+#print outfilename		
 
 #			print run['Num'].strip()
 #			print run['DateTime'].strip()
