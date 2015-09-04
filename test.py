@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-with open("/media/networkshare/public/14-08-21.log","r") as infile:
+with open("/media/networkshare/public/15-08-30a.log","r") as infile:
 	for line in infile:
 		if line.find("RUN:",0) > -1:
 			runNum=line[4:9]
