@@ -20,11 +20,11 @@ def Export_Left(rundata,outputfile):
 	with open(outputfile, 'a') as out:
 		out.write("insert into RunDetail (RaceNum, RaceDateTime, Class, RunType, ")
 		out.write("Lane, CarNo, DriverName, DialIn, Reaction, ")
-		out.write("60ft, MPH, Margin, Result, ET) Values ")
+		out.write("60ft, MPH, Margin, OffDial, Result, ET) Values ")
 		out.write("('%s', '%s', '%s', '%s', " % (rundata['Num'].strip(),rundata['DateTime'].strip(),rundata['RaceClass'].strip(),rundata['Type'].strip()) )
-		out.write("'%s', '%s', '%s', '%s', " % ('L', rundata['LeftNum'].strip(), rundata['LeftName'].strip(), rundata['LeftDial'].strip(), rundata['LeftReaction'].strip()) )
-		out.write("'%s', '%s', '%s', " % (rundata['Left60ft'].strip(), rundata['LeftMPH'].strip(),rundata['LeftMargin'].strip()))
-		out.write("'%s', '%s')\n" % (rundata['LeftResult'].strip(), rundata['LeftET'].strip()) )
+		out.write("'%s', '%s', '%s', '%s', '%s', " % ('L', rundata['LeftNum'].strip(), rundata['LeftName'].strip(), rundata['LeftDial'].strip(), rundata['LeftReaction'].strip()) )
+		out.write("'%s', '%s', '%s', " % (rundata['Left60FT'].strip(), rundata['LeftMPH'].strip(),rundata['LeftMargin'].strip()))
+		out.write("'%s', '%s', '%s')\n" % (rundata['LeftOffDial'].strip(), rundata['LeftResult'].strip(), rundata['LeftET'].strip()) )
 		out.close()
 
 def Export_Right(rundata,outputfile):
@@ -32,11 +32,11 @@ def Export_Right(rundata,outputfile):
 	with open(outputfile, 'a') as out:
 		out.write("insert into RunDetail (RaceNum, RaceDateTime, Class, RunType, ")
 		out.write("Lane, CarNo, DriverName, DialIn, Reaction, ") 
-		out.write("60ft, MPH, Margin, Result, ET) Values ")
+		out.write("60ft, MPH, Margin, OffDial, Result, ET) Values ")
 		out.write("('%s', '%s', '%s', '%s', " % (rundata['Num'].strip(),rundata['DateTime'].strip(),rundata['RaceClass'].strip(),rundata['Type'].strip()) )
-		out.write("'%s', '%s', '%s', '%s', " % ('R', rundata['RightNum'].strip(), rundata['RightName'].strip(), rundata['RightDial'].strip(), rundata['RightReaction'].strip()) )
-		out.write("'%s', '%s', '%s', " % (rundata['Right60ft'].strip(), rundata['RightMPH'].strip(),rundata['RightMargin'].strip()))		
-		out.write("'%s', '%s')\n" % (rundata['RightResult'].strip(), rundata['RightET'].strip()) )
+		out.write("'%s', '%s', '%s', '%s', '%s', " % ('R', rundata['RightNum'].strip(":"), rundata['RightName'].strip(), rundata['RightDial'].strip(), rundata['RightReaction'].strip()) )
+		out.write("'%s', '%s', '%s', " % (rundata['Right60FT'].strip(), rundata['RightMPH'].strip(),rundata['RightMargin'].strip()))		
+		out.write("'%s', '%s', '%s')\n" % (rundata['RightOffDial'].strip(), rundata['RightResult'].strip(), rundata['RightET'].strip()) )
 		out.close()
 
 def ProcessRun(rundata,outputfileLeft,outputfileRight):
@@ -63,11 +63,11 @@ with open(args.infile,"r") as infile:
 		if line.find("RD#",0) > -1:
 			run['RaceClass']=line[0:19]
 			run['Round']=line[28:36]
-			run['Type']=line[18:27]
+			run['Type']=line[19:27]
 
 		# Car Numbers. Advances line and takes names
 		if line.find("LEFT:",0) > -1:
-			run['LeftNum']=line[6:17]
+			run['LeftNum']=line[5:17]
 			run['RightNum']=line[33:36]
 			line = next(infile)
 			run['LeftName']=line[0:17]
@@ -105,12 +105,14 @@ with open(args.infile,"r") as infile:
 			line = next(infile)
 			if line.find("OFF DIAL",0) > -1:
 				run['LeftOffDial']=line[0:7]
-				run['RightOffdial']=line[28:36]
+				run['RightOffDial']=line[28:36]
 				line = next(infile)
 				run['LeftResult']=line[0:17]
 				run['RightResult']=line[18:36]
 				ProcessRun(run,outfileLeft,outfileRight)
 			else:	
+				run['LeftOffDial']='0'
+				run['RightOffDial']='0'
 				run['LeftResult']=line[0:17]
 				run['RightResult']=line[18:36]
 				ProcessRun(run,outfileLeft,outfileRight)		
