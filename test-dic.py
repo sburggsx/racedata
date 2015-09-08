@@ -7,6 +7,7 @@
 # opens defined file 
 # fills dictionary with run data
 
+import os
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -42,11 +43,23 @@ def Export_Right(rundata,outputfile):
 def ProcessRun(rundata,outputfileLeft,outputfileRight):
 	Export_Left(rundata,outputfileLeft)
 	Export_Right(rundata,outputfileRight)
+	WriteLastRunNum(LastRunFile,rundata['Num'])
 	run.clear()
 
+def LastRunNumFile(infilename,outdir):
+	logfile=os.path.basename(infilename)
+	RunNumFile=os.path.splitext(logfile)[0]
+	RunNumFile = outdir + RunNumFile + '.last'
+	return RunNumFile
 
+def WriteLastRunNum(outfile,runnum):
+	with open(outfile,"w") as out:
+		out.write(runnum + '\n')
+		out.close()
 
 run={}
+LastRunFile=LastRunNumFile(args.infile,args.outdir)
+
 
 with open(args.infile,"r") as infile:
 	for line in infile:
