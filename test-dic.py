@@ -15,8 +15,38 @@ parser.add_argument('-o', dest='outdir', help="output directory", metavar='OUTPU
 
 args = parser.parse_args()
 
+def Export_Left(rundata,outputfile):
 
-run=dict()
+	with open(outputfile, 'a') as out:
+		out.write("insert into RunDetail (RaceNum, RaceDateTime, Class, RunType, ")
+		out.write("Lane, CarNo, DriverName, DialIn, Reaction, ")
+		out.write("60ft, MPH, Margin, Result, ET) Values ")
+		out.write("('%s', '%s', '%s', '%s', " % (rundata['Num'].strip(),rundata['DateTime'].strip(),rundata['RaceClass'].strip(),rundata['Type'].strip()) )
+		out.write("'%s', '%s', '%s', '%s', " % ('L', rundata['LeftNum'].strip(), rundata['LeftName'].strip(), rundata['LeftDial'].strip(), rundata['LeftReaction'].strip()) )
+		out.write("'%s', '%s', '%s', " % (rundata['Left60ft'].strip(), rundata['LeftMPH'].strip(),rundata['LeftMargin'].strip()))
+		out.write("'%s', '%s')\n" % (rundata['LeftResult'].strip(), rundata['LeftET'].strip()) )
+		out.close()
+
+def Export_Right(rundata,outputfile):
+
+	with open(outputfile, 'a') as out:
+		out.write("insert into RunDetail (RaceNum, RaceDateTime, Class, RunType, ")
+		out.write("Lane, CarNo, DriverName, DialIn, Reaction, ") 
+		out.write("60ft, MPH, Margin, Result, ET) Values ")
+		out.write("('%s', '%s', '%s', '%s', " % (rundata['Num'].strip(),rundata['DateTime'].strip(),rundata['RaceClass'].strip(),rundata['Type'].strip()) )
+		out.write("'%s', '%s', '%s', '%s', " % ('R', rundata['RightNum'].strip(), rundata['RightName'].strip(), rundata['RightDial'].strip(), rundata['RightReaction'].strip()) )
+		out.write("'%s', '%s', '%s', " % (rundata['Right60ft'].strip(), rundata['RightMPH'].strip(),rundata['RightMargin'].strip()))		
+		out.write("'%s', '%s')\n" % (rundata['RightResult'].strip(), rundata['RightET'].strip()) )
+		out.close()
+
+def ProcessRun(rundata,outputfileLeft,outputfileRight):
+	Export_Left(rundata,outputfileLeft)
+	Export_Right(rundata,outputfileRight)
+	run.clear()
+
+
+
+run={}
 
 with open(args.infile,"r") as infile:
 	for line in infile:
@@ -25,12 +55,13 @@ with open(args.infile,"r") as infile:
 		if line.find("RUN:",0) > -1:
 			run['Num']=line[4:9]
 			run['DateTime']=line[13:36]
-			outfilename = args.outdir + run['Num'].strip() + 'L.sql'
+			outfileLeft = args.outdir + run['Num'].strip() + 'L.sql'
+                        outfileRight = args.outdir + run['Num'].strip() + 'R.sql'
 
 
 		# Round, Class, and Type	
 		if line.find("RD#",0) > -1:
-			run['Class']=line[0:19]
+			run['RaceClass']=line[0:19]
 			run['Round']=line[28:36]
 			run['Type']=line[18:27]
 
@@ -78,37 +109,38 @@ with open(args.infile,"r") as infile:
 				line = next(infile)
 				run['LeftResult']=line[0:17]
 				run['RightResult']=line[18:36]
+				ProcessRun(run,outfileLeft,outfileRight)
 			else:	
 				run['LeftResult']=line[0:17]
-				run['RightResult']=line[18:36]		
-
-# Section to print contents of dictionary
-# really only here for testing
-
-#		with open(outfilename,'a') as outfile: 
-#			for key in run:
-#				if key == 'RightNum':
-#					outfile.write(key + '=' + run[key].strip(':') + '\n')
-#				elif key == 'Round':
-#					outfile.write(key + '=' + run[key].strip('RD# ') + '\n')			
-#				else:
-#					outfile.write(key + '=' + run[key].strip() + '\n')
+				run['RightResult']=line[18:36]
+				ProcessRun(run,outfileLeft,outfileRight)		
 
 
-	with open(outfilename,'a') as outfile:
+#		Export_Left(run,outfileLeft)
+#		Export_Right(run,outfileRight)
+#print(run['RaceClass'])
+#run.clear()
 
-		outfile.write("insert into RunDetail (RaceNum, RaceDateTime, Class, RunType, ")
-		outfile.write("Lane, CarNo, DriverName, DialIn, Reaction, ET) Values ")
-		outfile.write("('%s', '%s', '%s', '%s', " % (run['Num'].strip(),run['DateTime'].strip(),run['Class'].strip(),run['Type'].strip()) )
-		outfile.write("'%s', '%s', '%s', '%s', " % ('L', run['LeftNum'].strip(), run['LeftName'].strip(), run['LeftDial'].strip()) )
-		outfile.write("'%s', '%s')\n" % (run['LeftReaction'].strip(), run['LeftET'].strip()) )
+		# Section to print contents of dictionary
+		# really only here for testing
 
-		outfile.close()
-#		print run['RaceCls']
-               # Empty this run from dictionary
-		run.clear()
+		#		with open(outfilename,'a') as outfile: 
+		#			for key in run:
+		#				if key == 'RightNum':
+		#					outfile.write(key + '=' + run[key].strip(':') + '\n')
+		#				elif key == 'Round':
+		#					outfile.write(key + '=' + run[key].strip('RD# ') + '\n')			
+		#				else:
+		#					outfile.write(key + '=' + run[key].strip() + '\n')
 
-#print outfilename		
+
+#		with open(outfilename,'a') as outfile:
+
+
+		#		print run['RaceCls']
+                # Empty this run from dictionary
+
+# print outfilename		
 
 #			print run['Num'].strip()
 #			print run['DateTime'].strip()
