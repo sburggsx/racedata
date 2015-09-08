@@ -95,15 +95,15 @@ with open(args.infile,"r") as infile:
 #					outfile.write(key + '=' + run[key].strip() + '\n')
 
 
-			with open(outfilename,'a') as outfile:
+	with open(outfilename,'a') as outfile:
 
-				outfile.write("insert into RunDetail (RaceNum, RaceDateTime, Class, RunType, ")
-				outfile.write("Lane, CarNo, DriverName, DialIn, Reaction, ET) Values ")
-				outfile.write("('%s', '%s', '%s', '%s', " % (run['Num'].strip(),run['DateTime'].strip(),run['Class'].strip(),run['Type'].strip()) )
-				outfile.write("'%s', '%s', '%s', '%s', " % ('L', run['LeftNum'].strip(), run['LeftName'].strip(), run['LeftDial'].strip()) )
-				outfile.write("'%s', '%s')\n" % (run['LeftReaction'].strip(), run['LeftET'].strip()) )
+		outfile.write("insert into RunDetail (RaceNum, RaceDateTime, Class, RunType, ")
+		outfile.write("Lane, CarNo, DriverName, DialIn, Reaction, ET) Values ")
+		outfile.write("('%s', '%s', '%s', '%s', " % (run['Num'].strip(),run['DateTime'].strip(),run['Class'].strip(),run['Type'].strip()) )
+		outfile.write("'%s', '%s', '%s', '%s', " % ('L', run['LeftNum'].strip(), run['LeftName'].strip(), run['LeftDial'].strip()) )
+		outfile.write("'%s', '%s')\n" % (run['LeftReaction'].strip(), run['LeftET'].strip()) )
 
-				outfile.close()
+		outfile.close()
 #		print run['RaceCls']
                # Empty this run from dictionary
 		run.clear()

@@ -5,6 +5,6 @@ for file in ./sql/*.sql
 do
 
 	mysql -h 31.220.17.16 -D raceresu_Gravelrama45 -u raceresu_gravel -pgravel1568  <${file}
-	mv ${file} ./achive/${file}
+	mv ${file} ./sql/archive
 
 done
