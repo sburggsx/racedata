@@ -57,9 +57,19 @@ def WriteLastRunNum(outfile,runnum):
 		out.write(runnum + '\n')
 		out.close()
 
+def ReadLastRunNum(runfile):
+	if os.path.exists(runfile):
+		with open(runfile,"r") as runin:
+			lastrun = runin.read()
+			return int(lastrun)
+	else:
+		return 0
+
+
 run={}
 LastRunFile=LastRunNumFile(args.infile,args.outdir)
-
+LastRun=ReadLastRunNum(LastRunFile)
+print(LastRun)
 
 with open(args.infile,"r") as infile:
 	for line in infile:
@@ -122,13 +132,15 @@ with open(args.infile,"r") as infile:
 				line = next(infile)
 				run['LeftResult']=line[0:17]
 				run['RightResult']=line[18:36]
-				ProcessRun(run,outfileLeft,outfileRight)
+				if int(run['Num']) > LastRun:
+					ProcessRun(run,outfileLeft,outfileRight)
 			else:	
 				run['LeftOffDial']='0'
 				run['RightOffDial']='0'
 				run['LeftResult']=line[0:17]
 				run['RightResult']=line[18:36]
-				ProcessRun(run,outfileLeft,outfileRight)		
+				if int(run['Num']) > LastRun:
+					ProcessRun(run,outfileLeft,outfileRight)		
 
 
 #		Export_Left(run,outfileLeft)
