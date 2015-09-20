@@ -1,10 +1,16 @@
 #!/bin/bash
 
-for file in ./sql/*.sql
+files=$(ls ./sql/*.sql 2> /dev/null | wc -l)
+if [ "$files" != "0" ]
+then
 
-do
+	for file in ./sql/*.sql
 
-	mysql -h 31.220.17.16 -D raceresu_Gravelrama45 -u raceresu_gravel -pgravel1568  <${file}
-	mv ${file} ./sql/archive
+	do
 
-done
+		mysql -h 31.220.17.16 -D raceresu_Final2015 -u raceresu_final -pgravel1568  <${file}
+		mv ${file} ./sql/archive
+
+	done
+
+fi
