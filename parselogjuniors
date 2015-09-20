@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python juniors-dic.py -i /media/networkshare/public/15-09-19.log -o /home/pi/racedata/sql/
