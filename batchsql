@@ -8,7 +8,7 @@ then
 
 	do
 
-		mysql -h 31.220.17.16 -D raceresu_Final2015 -u raceresu_final -pgravel1568  <${file}
+		mysql -h 31.220.17.16 -D raceresu_LastBlast2015 -u raceresu_gravel -pgravel1568  <${file}
 		mv ${file} ./sql/archive
 
 	done
